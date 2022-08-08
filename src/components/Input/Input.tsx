@@ -10,6 +10,7 @@ const getInputFontStyle = ({ $theme }) => {
 
 const Input = ({ ...props }) => {
   return (
+      // @ts-ignore
     <BaseInput
       overrides={{
         Input: {

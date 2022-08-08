@@ -7,7 +7,8 @@ export const getContainerFontStyle = ({ $theme }) => {
 };
 
 export default function CustomSelect(props) {
-  return (
+    return (
+        // @ts-ignore
     <Select
       overrides={{
         SelectArrow: () => {

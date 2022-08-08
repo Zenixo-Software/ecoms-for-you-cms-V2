@@ -1,24 +1,32 @@
 import { styled } from "baseui";
 
 export const Wrapper = styled("div", ({ $theme }) => ({
-  width: "100vw",
-  height: "100vh",
+  width: "100%",
+  height: "100%",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   // @ts-ignore
   backgroundColor: $theme.colors.borderF1,
+  overflowX:"hidden",
 
   "@media only screen and (max-width: 520px)": {
     backgroundColor: "#fff"
   }
 }));
 
-export const FormWrapper = styled("div", () => ({
-  width: "470px",
+export const Form = styled("form", ({ $theme }) => ({
+  // minHeight: '100vh',
+  // @ts-ignore
+  backgroundColor: "#ffffff",
+  paddingBottom: "100px"
+}));
+
+export const RegisterFormWrapper = styled("div", () => ({
+  width: "500px",
   borderRadius: "3px",
   backgroundColor: "#ffffff",
-  padding: "50px",
+  padding: "20px",
   display: "flex",
   flexDirection: "column",
 
@@ -27,17 +35,6 @@ export const FormWrapper = styled("div", () => ({
     padding: "30px"
   }
 }));
-
-export const Title = styled("h3", ({ $theme }) => ({
-  // @ts-ignore
-  ...$theme.typography.font250,
-  marginTop: "0",
-  marginBottom: "0",
-  // @ts-ignore
-  color: $theme.colors.tabColor,
-  textAlign: "center"
-}));
-
 
 export const LogoWrapper = styled("div", () => ({
   display: "flex",

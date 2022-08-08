@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
-import { useMutation, gql } from '@apollo/client';
 import { useDrawerDispatch } from 'context/DrawerContext';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Uploader from 'components/Uploader/Uploader';
@@ -10,6 +8,7 @@ import Select from 'components/Select/Select';
 import Button, { KIND } from 'components/Button/Button';
 import DrawerBox from 'components/DrawerBox/DrawerBox';
 import { Row, Col } from 'components/FlexBox/FlexBox';
+import {fireAlertMessage} from "../../util/error/errorMessage"
 import {
   Form,
   DrawerTitleWrapper,
@@ -18,32 +17,9 @@ import {
   ButtonGroup,
 } from '../DrawerItems/DrawerItems.style';
 import { FormFields, FormLabel } from 'components/FormFields/FormFields';
-
-const GET_CATEGORIES = gql`
-  query getCategories($type: String, $searchBy: String) {
-    categories(type: $type, searchBy: $searchBy) {
-      id
-      icon
-      name
-      slug
-      type
-    }
-  }
-`;
-const CREATE_CATEGORY = gql`
-  mutation createCategory($category: AddCategoryInput!) {
-    createCategory(category: $category) {
-      id
-      name
-      type
-      icon
-      # creation_date
-      slug
-      # number_of_product
-    }
-  }
-`;
-
+import {useFormik} from "formik";
+import {useDispatch} from "react-redux";
+import {categoryCallerAction} from '../../redux/categoryRedux/categoryActions'
 const options = [
   { value: 'grocery', name: 'Grocery', id: '1' },
   { value: 'women-cloths', name: 'Women Cloths', id: '2' },
@@ -52,52 +28,70 @@ const options = [
 ];
 type Props = any;
 
-const AddCategory: React.FC<Props> = (props) => {
-  const dispatch = useDrawerDispatch();
-  const closeDrawer = useCallback(() => dispatch({ type: 'CLOSE_DRAWER' }), [
-    dispatch,
+const dataObj ={
+  title: '',
+  icon: '',
+  children:[],
+}
+
+const AddCategory: React.FC<Props> = () => {
+  const dispatchWindow = useDrawerDispatch();
+  const dispatch = useDispatch()
+  const closeDrawer = useCallback(() => dispatchWindow({ type: 'CLOSE_DRAWER' }), [
+    dispatchWindow,
   ]);
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, setValue } = useForm();
   const [category, setCategory] = useState([]);
-  React.useEffect(() => {
-    register({ name: 'parent' });
-    register({ name: 'image' });
-  }, [register]);
-  const [createCategory] = useMutation(CREATE_CATEGORY, {
-    update(cache, { data: { createCategory } }) {
-      const { categories } = cache.readQuery({
-        query: GET_CATEGORIES,
-      });
+  const [subCategory, setSubCategory] = useState([]);
+  const [catIcon, setCatIcon] = useState()
 
-      cache.writeQuery({
-        query: GET_CATEGORIES,
-        data: { categories: categories.concat([createCategory]) },
-      });
-    },
-  });
-
-  const onSubmit = ({ name, slug, parent, image }) => {
-    const newCategory = {
-      id: uuidv4(),
-      name: name,
-      type: parent[0].value,
-      slug: slug,
-      icon: image,
-      creation_date: new Date(),
-    };
-    createCategory({
-      variables: { category: newCategory },
-    });
-    closeDrawer();
-    console.log(newCategory, 'newCategory');
-  };
   const handleChange = ({ value }) => {
     setValue('parent', value);
     setCategory(value);
   };
+  const handleSubCategoryChange = ({ value }) => {
+    setSubCategory(value);
+  };
   const handleUploader = (files) => {
     setValue('image', files[0].path);
+    setCatIcon(files[0])
   };
+
+  //Validation Part
+  const validate = (values) => {
+    if (!values.title) {
+      fireAlertMessage("Category Title is required")
+      return
+    }
+    if (!catIcon) {
+      fireAlertMessage("Category Image is required")
+      return
+    }
+    if (subCategory.length === 0) {
+      fireAlertMessage("Category's is required")
+      return
+    }
+    if (category.length === 0) {
+      fireAlertMessage("Type field is required")
+      return
+    }
+
+    dataObj.title = values.title;
+    dataObj.icon = catIcon;
+    dataObj.children = subCategory.map(data=>data.name);
+    dispatch(categoryCallerAction(dataObj))
+
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+    },
+    onSubmit: (values) => {
+      const loading = false
+      if (!loading) validate(values)
+    }
+  })
 
   return (
     <>
@@ -105,7 +99,7 @@ const AddCategory: React.FC<Props> = (props) => {
         <DrawerTitle>Add Category</DrawerTitle>
       </DrawerTitleWrapper>
 
-      <Form onSubmit={handleSubmit(onSubmit)} style={{ height: '100%' }}>
+      <Form onSubmit={formik.handleSubmit} style={{ height: '100%' }}>
         <Scrollbars
           autoHide
           renderView={(props) => (
@@ -156,18 +150,36 @@ const AddCategory: React.FC<Props> = (props) => {
             <Col lg={8}>
               <DrawerBox>
                 <FormFields>
-                  <FormLabel>Category Name</FormLabel>
+                  <FormLabel>Category Title</FormLabel>
                   <Input
                     inputRef={register({ required: true, maxLength: 20 })}
-                    name="name"
+                    name="title"
+                    onChange={formik.handleChange}
+                    value={formik.values.title}
                   />
                 </FormFields>
 
                 <FormFields>
-                  <FormLabel>Slug</FormLabel>
-                  <Input
-                    inputRef={register({ pattern: /^[A-Za-z]+$/i })}
-                    name="slug"
+                  <FormLabel>Category's</FormLabel>
+                  <Select
+                      creatable
+                      multi
+                      labelKey="name"
+                      valueKey="value"
+                      placeholder="Ex: Type your category name (fruits,vegetables)"
+                      value={subCategory}
+                      searchable={true}
+                      onChange={handleSubCategoryChange}
+                      overrides={{
+                        Placeholder: {
+                          style: ({ $theme }) => {
+                            return {
+                              ...$theme.typography.fontBold14,
+                              color: $theme.colors.textNormal,
+                            };
+                          },
+                        }
+                      }}
                   />
                 </FormFields>
 
@@ -258,7 +270,7 @@ const AddCategory: React.FC<Props> = (props) => {
             type="submit"
             overrides={{
               BaseButton: {
-                style: ({ $theme }) => ({
+                style: () => ({
                   width: '50%',
                   borderTopLeftRadius: '3px',
                   borderTopRightRadius: '3px',
