@@ -1,13 +1,11 @@
 import {put, takeLatest} from "redux-saga/effects";
 import * as actionTypes from "../categoryRedux/categoryActionTypes";
 import {createRequest} from "../../util/function/axiosRequest";
+import {fireAlertMessage, fireAlertRegister} from "../../util/error/errorMessage";
 
 
 export function* categoryCaller(action) {
-    console.log(action)
-    console.log(action.data)
     try {
-
         yield put({type: actionTypes.ADD_CATEGORY_START});
         const formData = new FormData();
         formData.append('title', action.data.title)
@@ -18,10 +16,30 @@ export function* categoryCaller(action) {
         const Axios = yield createRequest();
         const res = yield Axios.post("category", formData);
         if (res) {
-            console.log(res)
+            fireAlertRegister("Category Created!");
+            action.closeDrawer()
         }
     } catch (error) {
+        fireAlertMessage("Something went wrong!");
+        yield put({type: actionTypes.ADD_CATEGORY_FAILED});
+    } finally {
+        yield put({type: actionTypes.ADD_CATEGORY_END});
+    }
+}
 
+export function* getCategoryCaller(action) {
+    try {
+        const Axios = yield createRequest();
+        const res = yield Axios.get("category");
+        if (res === 200) {
+            console.log(res)
+            yield put({
+                type: actionTypes.GET_ALL_CATEGORY_SUCCESS,
+                data: res.data
+            })
+        }
+    } catch (error) {
+        fireAlertMessage("Something went wrong!");
     }
 }
 

@@ -12,7 +12,7 @@ import {fireAlertMessage} from "../../util/error/errorMessage"
 import {ButtonGroup, DrawerTitle, DrawerTitleWrapper, FieldDetails, Form,} from '../DrawerItems/DrawerItems.style';
 import {FormFields, FormLabel} from 'components/FormFields/FormFields';
 import {useFormik} from "formik";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {categoryCallerAction} from '../../redux/categoryRedux/categoryActions'
 
 // const options = [
@@ -41,7 +41,7 @@ const AddCategory: React.FC<Props> = () => {
     const [category, setCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
     const [catIcon, setCatIcon] = useState()
-    const authData = useSelector((state: any) => state.authReducer);
+    //const authData = useSelector((state: any) => state.authReducer);
     const shopTypes = [];
     shopTypes.push(localStorage.getItem('shopType'))
     const options = [];
@@ -88,7 +88,7 @@ const AddCategory: React.FC<Props> = () => {
             subCat.push({title: subCategory[i].name, type: localStorage.getItem('shopType').toLowerCase()});
         }
         dataObj.children = subCat;
-        dispatch(categoryCallerAction(dataObj))
+        dispatch(categoryCallerAction(dataObj, closeDrawer))
 
     }
 

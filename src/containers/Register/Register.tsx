@@ -30,9 +30,9 @@ const options = [
 ];
 
 
-const MyInput = ({field, form, ...props}) => {
-    return <Input {...field} {...props} />;
-};
+// const MyInput = ({field, form, ...props}) => {
+//     return <Input {...field} {...props} />;
+// };
 
 export default function Register() {
     const dispatch = useDispatch()
