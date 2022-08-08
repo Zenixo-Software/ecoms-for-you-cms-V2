@@ -110,7 +110,12 @@ export default function Login() {
                                 Submit
                             </Button>
                             <div style={{marginTop: 15}}>
-                                <Title>New on our platform?Create an account</Title>
+                                <Title>New on our platform? <span
+                                    style={{
+                                        color: '#00bd87',
+                                        cursor: 'pointer',
+                                        width: 500
+                                    }} onClick={() => history.push('/register')}>Create an account</span></Title>
                             </div>
                         </Form>
                     )}
