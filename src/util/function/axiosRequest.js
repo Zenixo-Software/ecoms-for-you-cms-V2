@@ -20,3 +20,13 @@ export function* createRequest(upload) {
     }
     return null
 }
+
+// eslint-disable-next-line require-yield
+export function* createAuthRequest(upload) {
+    return axios.create({
+        baseURL: `${process.env.REACT_APP_BASE_API_URL}/`,
+        headers: {
+            "Content-type": !upload ? "application/json" : "multipart/form-data"
+        }
+    })
+}

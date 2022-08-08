@@ -8,13 +8,12 @@ export function* addProductCaller(action) {
 
 
 function* watchProductSagas() {
-    console.log('watchProductSagas')
     yield takeLatest(ADD_PRODUCT_CALLER, addProductCaller)
 
 }
 
 
 
-const productSagas = [watchProductSagas]
+const productSagas = [watchProductSagas];
 
-export default productSagas
+export default productSagas;
