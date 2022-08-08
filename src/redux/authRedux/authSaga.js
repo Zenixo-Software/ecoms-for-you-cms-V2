@@ -34,11 +34,15 @@ export function* loginCaller(action) {
             fireAlertRegister("Hi... Welcome...!")
             const user = yield auth.currentUser.getIdToken(true)
             const jwt = parseJwt(user)
-            localStorage.setItem("tenantId", jwt.tenantId)
+            localStorage.setItem("tenantId", jwt.tenantId);
+            localStorage.setItem("shopType", jwt.shopType);
             action.makeAuthenticated(true)
             action.history.push("/")
+            yield put({
+                type: actionType.LOGIN_SUCCESS,
+                data: jwt,
+            })
         }
-        yield put({type: actionType.LOGIN_SUCCESS})
     } catch (error) {
         switch (error.code) {
             case actionType.ERROR_INVALID_EMAIL:

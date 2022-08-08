@@ -31,6 +31,7 @@ const AuthProvider = (props: any) => {
     function signout(cb) {
         makeAuthenticated(false);
         localStorage.removeItem('tenantId');
+        localStorage.removeItem('shopType');
         setTimeout(cb, 100);
         history.push('/login')
     }

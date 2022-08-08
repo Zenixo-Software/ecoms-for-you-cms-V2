@@ -3,7 +3,8 @@ import * as authActions from './authActionTypes'
 const initialState = {
     loading: false,
     error: false,
-    isAuth: false
+    isAuth: false,
+    userData: {}
 }
 
 export function authReducer(state = initialState, action) {
@@ -53,7 +54,8 @@ export function authReducer(state = initialState, action) {
                 ...state,
                 error: false,
                 loading: false,
-                isAuth: true
+                isAuth: true,
+                userData: action.data
             }
         case authActions.LOGIN_FAILED:
             return {
