@@ -6,7 +6,7 @@ const initialState = {
     children: [],
     loading: false,
     error: false,
-    category: []
+    categories: []
 }
 
 export function categoryReducer(state = initialState, action) {
@@ -42,13 +42,13 @@ export function categoryReducer(state = initialState, action) {
                 ...state,
                 loading: true,
                 error: false,
-
             }
         case actionTypes.GET_ALL_CATEGORY_SUCCESS:
+            console.log(action.data)
             return {
                 ...state,
-                category: action.data,
-                loading: false
+                loading: false,
+                categories: action.data,
             }
         case actionTypes.GET_ALL_CATEGORY_FAILED:
             return {

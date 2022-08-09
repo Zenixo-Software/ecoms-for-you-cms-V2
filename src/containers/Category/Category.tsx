@@ -1,17 +1,19 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {withStyle} from 'baseui';
 import {Col as Column, Grid, Row as Rows} from 'components/FlexBox/FlexBox';
 import {useDrawerDispatch} from 'context/DrawerContext';
 import Select from 'components/Select/Select';
 import Input from 'components/Input/Input';
 import Button from 'components/Button/Button';
-import Checkbox from 'components/CheckBox/CheckBox';
 import {gql, useQuery} from '@apollo/client';
 import {Header, Heading, Wrapper} from 'components/Wrapper.style';
-import {ImageWrapper, StyledCell, StyledHeadCell, StyledTable, TableWrapper,} from './Category.style';
+import {StyledCell, StyledHeadCell, StyledTable, TableWrapper,} from './Category.style';
 import {Plus} from 'assets/icons/Plus';
 import * as icons from 'assets/icons/category-icons';
-import NoResult from 'components/NoResult/NoResult';
+import {useDispatch, useSelector} from "react-redux";
+import {getCategoryCallerAction} from '../../redux/categoryRedux/categoryActions';
+import {InLineLoader} from "../../components/InlineLoader/InlineLoader";
+import {AiTwotoneEdit} from "react-icons/all";
 
 const GET_CATEGORIES = gql`
   query getCategories($type: String, $searchBy: String) {
@@ -51,19 +53,25 @@ const categorySelectOptions = [
 export default function Category() {
     const [category, setCategory] = useState([]);
     const [search, setSearch] = useState('');
-    const dispatch = useDrawerDispatch();
+    const drawerDispatch = useDrawerDispatch();
+    const dispatch = useDispatch()
     const [checkedId, setCheckedId] = useState([]);
     const [checked, setChecked] = useState(false);
     const openDrawer = useCallback(
-        () => dispatch({type: 'OPEN_DRAWER', drawerComponent: 'CATEGORY_FORM'}),
-        [dispatch]
+        () => drawerDispatch({type: 'OPEN_DRAWER', drawerComponent: 'CATEGORY_FORM'}),
+        [drawerDispatch]
     );
+    const getCateory = useSelector((state: any) => state.categoryReducer.categories);
 
+    useEffect(() => {
+        dispatch(getCategoryCallerAction())
+    }, [dispatch])
 
     const {data, error, refetch} = useQuery(GET_CATEGORIES);
     if (error) {
         return <div>Error! {error.message}</div>;
     }
+
 
     function handleSearch(event) {
         const value = event.currentTarget.value;
@@ -112,6 +120,7 @@ export default function Category() {
     };
 
 
+    // @ts-ignore
     return (
         <Grid fluid={true}>
             <Row>
@@ -175,83 +184,39 @@ export default function Category() {
                     <Wrapper style={{boxShadow: '0 0 5px rgba(0, 0 , 0, 0.05)'}}>
                         <TableWrapper>
                             <StyledTable
-                                $gridTemplateColumns="minmax(70px, 70px) minmax(70px, 70px) minmax(70px, 70px) minmax(150px, auto) minmax(150px, auto) auto">
-                                <StyledHeadCell>
-                                    <Checkbox
-                                        type="checkbox"
-                                        value="checkAll"
-                                        checked={checked}
-                                        onChange={onAllCheck}
-                                        overrides={{
-                                            Checkmark: {
-                                                style: {
-                                                    borderTopWidth: '2px',
-                                                    borderRightWidth: '2px',
-                                                    borderBottomWidth: '2px',
-                                                    borderLeftWidth: '2px',
-                                                    borderTopLeftRadius: '4px',
-                                                    borderTopRightRadius: '4px',
-                                                    borderBottomRightRadius: '4px',
-                                                    borderBottomLeftRadius: '4px',
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </StyledHeadCell>
+                                $gridTemplateColumns="minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto)">
                                 <StyledHeadCell>Id</StyledHeadCell>
-                                <StyledHeadCell>Image</StyledHeadCell>
-                                <StyledHeadCell>Name</StyledHeadCell>
-                                <StyledHeadCell>Slug</StyledHeadCell>
+                                <StyledHeadCell>Icon</StyledHeadCell>
+                                <StyledHeadCell>Title</StyledHeadCell>
                                 <StyledHeadCell>Type</StyledHeadCell>
+                                <StyledHeadCell>More Details</StyledHeadCell>
 
-                                {data ? (
-                                    data.categories.length ? (
-                                        data.categories
-                                            .map((item) => Object.values(item))
-                                            .map((row, index) => (
-                                                <React.Fragment key={index}>
-                                                    <StyledCell>
-                                                        <Checkbox
-                                                            name={row[1]}
-                                                            checked={checkedId.includes(row[1])}
-                                                            onChange={handleCheckbox}
-                                                            overrides={{
-                                                                Checkmark: {
-                                                                    style: {
-                                                                        borderTopWidth: '2px',
-                                                                        borderRightWidth: '2px',
-                                                                        borderBottomWidth: '2px',
-                                                                        borderLeftWidth: '2px',
-                                                                        borderTopLeftRadius: '4px',
-                                                                        borderTopRightRadius: '4px',
-                                                                        borderBottomRightRadius: '4px',
-                                                                        borderBottomLeftRadius: '4px',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </StyledCell>
-                                                    <StyledCell>{row[1]}</StyledCell>
-                                                    <StyledCell>
-                                                        <ImageWrapper>
-                                                            <Icon name={row[2]}/>
-                                                        </ImageWrapper>
-                                                    </StyledCell>
-                                                    <StyledCell>{row[3]}</StyledCell>
-                                                    <StyledCell>{row[4]}</StyledCell>
-                                                    <StyledCell>{row[5]}</StyledCell>
-                                                </React.Fragment>
-                                            ))
+                                {getCateory ? (
+                                    getCateory.length ? (
+                                        getCateory
+                                            .map((item, index) =>
+                                                (
+                                                    <React.Fragment key={index}>
+                                                        <StyledCell>{item._id}</StyledCell>
+                                                        <StyledCell>
+                                                            <img style={{width: 60, height: 60, borderRadius: 100}}
+                                                                 src={item.icon}
+                                                                 alt='Ecoms For You'/>
+                                                        </StyledCell>
+                                                        <StyledCell>{item.title}</StyledCell>
+                                                        <StyledCell>{item.type}</StyledCell>
+                                                        <StyledCell><AiTwotoneEdit
+                                                            style={{cursor: 'pointer'}}/></StyledCell>
+                                                    </React.Fragment>
+                                                )
+                                            )
+
                                     ) : (
-                                        <NoResult
-                                            hideButton={false}
-                                            style={{
-                                                gridColumnStart: '1',
-                                                gridColumnEnd: 'one',
-                                            }}
-                                        />
+                                        <InLineLoader/>
                                     )
-                                ) : null}
+                                ) : (
+                                    <InLineLoader/>
+                                )}
                             </StyledTable>
                         </TableWrapper>
                     </Wrapper>

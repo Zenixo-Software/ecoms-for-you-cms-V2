@@ -12,8 +12,9 @@ import {fireAlertMessage} from "../../util/error/errorMessage"
 import {ButtonGroup, DrawerTitle, DrawerTitleWrapper, FieldDetails, Form,} from '../DrawerItems/DrawerItems.style';
 import {FormFields, FormLabel} from 'components/FormFields/FormFields';
 import {useFormik} from "formik";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {categoryCallerAction} from '../../redux/categoryRedux/categoryActions'
+import {Spinner} from "baseui/spinner";
 
 // const options = [
 //     {value: 'grocery', name: 'Grocery', id: '1'},
@@ -41,7 +42,7 @@ const AddCategory: React.FC<Props> = () => {
     const [category, setCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
     const [catIcon, setCatIcon] = useState()
-    //const authData = useSelector((state: any) => state.authReducer);
+    const loading = useSelector((state: any) => state.categoryReducer.loading);
     const shopTypes = [];
     shopTypes.push(localStorage.getItem('shopType'))
     const options = [];
@@ -102,6 +103,7 @@ const AddCategory: React.FC<Props> = () => {
         }
     })
 
+    // @ts-ignore
     return (
         <>
             <DrawerTitleWrapper>
@@ -289,7 +291,19 @@ const AddCategory: React.FC<Props> = () => {
                             },
                         }}
                     >
-                        Create Category
+                        {!loading ? (
+                            <div> Create Category </div>
+                        ) : (
+                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                <div>
+                                    Loading...!
+                                </div>
+                                <div style={{marginLeft: 8}}>
+                                    {/*@ts-ignore*/}
+                                    <Spinner color='#ffffff' size={25} title='Loading...!'/>
+                                </div>
+                            </div>
+                        )}
                     </Button>
                 </ButtonGroup>
             </Form>

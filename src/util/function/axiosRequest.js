@@ -1,20 +1,23 @@
 import axios from "axios"
-import {auth} from "../../config/firebase.config"
+import {auth} from '../../config/firebase.config'
 
 
-export function* createRequest(upload) {
-    const user = yield auth.currentUser
-    user.getIdToken = function (b) {
-        return undefined;
-    }
-    if (user) {
-        const tenantId = localStorage.getItem("tenantId")
-        const idToken = yield user.getIdToken(true)
+export function createRequest(upload) {
+    const tenantId = localStorage.getItem("tenantId")
+    const isUser = auth.onAuthStateChanged((user) => {
+        if (user) {
+            return auth.currentUser
+        }
+    });
+
+    if (isUser) {
+        // const user = auth.currentUser;
+        // const idToken = user.getIdToken(true);
         return axios.create({
             baseURL: `${process.env.REACT_APP_BASE_API_URL}/${tenantId}/`,
             headers: {
                 "Content-type": !upload ? "application/json" : "multipart/form-data",
-                Authorization: `Bearer ${idToken}`
+                Authorization: `Bearer ${tenantId}`
             }
         })
     }

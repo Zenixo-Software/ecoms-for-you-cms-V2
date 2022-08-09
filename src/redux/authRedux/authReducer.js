@@ -4,7 +4,8 @@ const initialState = {
     loading: false,
     error: false,
     isAuth: false,
-    userData: {}
+    userData: {},
+    idToken: null,
 }
 
 export function authReducer(state = initialState, action) {
@@ -63,6 +64,11 @@ export function authReducer(state = initialState, action) {
                 error: true,
                 loading: true
             }
+        case authActions.SAVE_ID_TOKEN:
+            return {
+                ...state,
+                idToken: action.token
+            };
         default:
             return {
                 ...state

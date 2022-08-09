@@ -1,5 +1,6 @@
-import React, {lazy, Suspense, useContext} from 'react';
+import React, {lazy, Suspense, useContext, useEffect} from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
+import {auth} from './config/firebase.config';
 import {
     CATEGORY,
     COUPONS,
@@ -15,6 +16,8 @@ import {
 } from 'settings/constants';
 import AuthProvider, {AuthContext} from 'context/auth';
 import {InLineLoader} from 'components/InlineLoader/InlineLoader';
+import {useDispatch} from "react-redux";
+import {saveIdToken} from '../src/redux/authRedux/authActions'
 
 const Products = lazy(() => import('containers/Products/Products'));
 const AdminLayout = lazy(() => import('containers/Layout/Layout'));
@@ -40,9 +43,19 @@ const Register = lazy(() => import('containers/Register/Register'));
  */
 
 function PrivateRoute({children, ...rest}) {
+    const dispatch = useDispatch();
     const {isAuthenticated} = useContext(AuthContext);
     const token = localStorage.getItem('tenantId');
-
+    useEffect(() => {
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                user.getIdToken(true).then((idToken) => {
+                    dispatch(saveIdToken(idToken));
+                })
+            }
+            localStorage.setItem('refreshToken', user.refreshToken);
+        })
+    }, [dispatch])
 
     return (
         <Route
@@ -64,6 +77,17 @@ function PrivateRoute({children, ...rest}) {
 }
 
 const Routes = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                user.getIdToken(true).then((idToken) => {
+                    dispatch(saveIdToken(idToken));
+                })
+            }
+            localStorage.setItem('refreshToken', user.refreshToken);
+        })
+    }, [dispatch])
     return (
         <AuthProvider>
             <Suspense fallback={<InLineLoader/>}>

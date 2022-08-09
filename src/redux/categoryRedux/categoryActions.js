@@ -7,3 +7,10 @@ export const categoryCallerAction = (data, closeDrawer) => {
         closeDrawer
     }
 }
+
+export const getCategoryCallerAction = (data) => {
+    return {
+        type: actionTypes.GET_ALL_CATEGORY_CALLER,
+        data
+    }
+}
