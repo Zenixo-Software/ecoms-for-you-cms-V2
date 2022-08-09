@@ -16,3 +16,7 @@ export const loginCallerActionCaller = (data, history, makeAuthenticated) => {
         makeAuthenticated
     }
 }
+
+export function saveIdToken(token) {
+    return {type: actionTypes.SAVE_ID_TOKEN, token};
+}

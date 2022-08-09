@@ -70,5 +70,5 @@ function* watchRegisterSagas() {
 
 }
 
-const registerSata = [watchRegisterSagas];
-export default registerSata;
+const registerSaga = [watchRegisterSagas];
+export default registerSaga;

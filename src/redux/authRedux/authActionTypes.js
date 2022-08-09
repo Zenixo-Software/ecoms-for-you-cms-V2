@@ -15,3 +15,6 @@ export const ERROR_INVALID_PASSWORD = "auth/wrong-password"
 export const ERROR_INVALID_EMAIL = "auth/user-not-found"
 export const ERROR_USER_DISABLED = "auth/user-disabled"
 export const REAUTHENTICATE = "auth/requires-recent-login"
+
+
+export const SAVE_ID_TOKEN = 'SAVE_ID_TOKEN';
