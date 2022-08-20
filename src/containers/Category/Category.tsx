@@ -13,7 +13,9 @@ import * as icons from 'assets/icons/category-icons';
 import {useDispatch, useSelector} from "react-redux";
 import {getCategoryCallerAction} from '../../redux/categoryRedux/categoryActions';
 import {InLineLoader} from "../../components/InlineLoader/InlineLoader";
-import {AiTwotoneEdit} from "react-icons/all";
+import {AiTwotoneEdit, ImBoxRemove} from "react-icons/all";
+import CategoryAlert from "../CategoryForm/categoryAlert";
+import * as categoryAction from '../../redux/categoryRedux/categoryActionTypes'
 
 const GET_CATEGORIES = gql`
   query getCategories($type: String, $searchBy: String) {
@@ -50,22 +52,29 @@ const categorySelectOptions = [
     {value: 'makeup', label: 'Makeup'},
 ];
 
+const dataObj = {
+    query:''
+}
+
 export default function Category() {
     const [category, setCategory] = useState([]);
     const [search, setSearch] = useState('');
     const drawerDispatch = useDrawerDispatch();
     const dispatch = useDispatch()
-    const [checkedId, setCheckedId] = useState([]);
-    const [checked, setChecked] = useState(false);
     const openDrawer = useCallback(
         () => drawerDispatch({type: 'OPEN_DRAWER', drawerComponent: 'CATEGORY_FORM'}),
         [drawerDispatch]
     );
-    const getCateory = useSelector((state: any) => state.categoryReducer.categories);
+    const openCategoryForm = useCallback(
+        (data) =>
+            drawerDispatch({type: 'OPEN_DRAWER', drawerComponent: 'OPEN_CATEGORY_EDIT_FORM', data: data}),
+        [drawerDispatch]
+    );
+    const getCategory = useSelector((state: any) => state.categoryReducer.categories);
 
     useEffect(() => {
-        dispatch(getCategoryCallerAction())
-    }, [dispatch])
+        dispatch(getCategoryCallerAction(dataObj.query = search))
+    }, [dispatch,search])
 
     const {data, error, refetch} = useQuery(GET_CATEGORIES);
     if (error) {
@@ -94,30 +103,6 @@ export default function Category() {
             });
         }
     }
-
-    function onAllCheck(event) {
-        if (event.target.checked) {
-            const idx = data && data.categories.map((current) => current.id);
-            setCheckedId(idx);
-        } else {
-            setCheckedId([]);
-        }
-        setChecked(event.target.checked);
-    }
-
-    function handleCheckbox(event) {
-        const {name} = event.currentTarget;
-        if (!checkedId.includes(name)) {
-            setCheckedId((prevState) => [...prevState, name]);
-        } else {
-            setCheckedId((prevState) => prevState.filter((id) => id !== name));
-        }
-    }
-
-    const Icon = ({name}) => {
-        const TagName = icons[name];
-        return !!TagName ? <TagName/> : <p>Invalid icon {name}</p>;
-    };
 
 
     // @ts-ignore
@@ -184,16 +169,17 @@ export default function Category() {
                     <Wrapper style={{boxShadow: '0 0 5px rgba(0, 0 , 0, 0.05)'}}>
                         <TableWrapper>
                             <StyledTable
-                                $gridTemplateColumns="minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto)">
+                                $gridTemplateColumns="minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto)">
                                 <StyledHeadCell>Id</StyledHeadCell>
                                 <StyledHeadCell>Icon</StyledHeadCell>
                                 <StyledHeadCell>Title</StyledHeadCell>
                                 <StyledHeadCell>Type</StyledHeadCell>
                                 <StyledHeadCell>More Details</StyledHeadCell>
+                                <StyledHeadCell>Remove</StyledHeadCell>
 
-                                {getCateory ? (
-                                    getCateory.length ? (
-                                        getCateory
+                                {getCategory ? (
+                                    getCategory.length ? (
+                                        getCategory
                                             .map((item, index) =>
                                                 (
                                                     <React.Fragment key={index}>
@@ -205,8 +191,15 @@ export default function Category() {
                                                         </StyledCell>
                                                         <StyledCell>{item.title}</StyledCell>
                                                         <StyledCell>{item.type}</StyledCell>
-                                                        <StyledCell><AiTwotoneEdit
-                                                            style={{cursor: 'pointer'}}/></StyledCell>
+                                                        <StyledCell>
+                                                            <AiTwotoneEdit
+                                                             onClick={()=>openCategoryForm(item)} style={{cursor: 'pointer'}}/>
+                                                        </StyledCell>
+                                                        <StyledCell>
+                                                            <ImBoxRemove
+                                                                onClick={()=>dispatch({type:categoryAction.CATEGORY_REMOVE_MODEL_OPEN})} style={{cursor: 'pointer'}}/>
+                                                        </StyledCell>
+                                                        <CategoryAlert deleteId={item.id}/>
                                                     </React.Fragment>
                                                 )
                                             )

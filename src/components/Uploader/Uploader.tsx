@@ -4,8 +4,11 @@ import {styled} from 'baseui';
 import {UploadIcon} from 'assets/icons/UploadIcon';
 
 const Text = styled('span', ({$theme}) => ({
+    // @ts-ignore
     ...$theme.typography.font14,
+    // @ts-ignore
     fontFamily: $theme.typography.primaryFontFamily,
+    // @ts-ignore
     color: $theme.colors.textDark,
     marginTop: '15px',
     textAlign: 'center',
@@ -15,7 +18,7 @@ const TextHighlighted = styled('span', ({$theme}) => ({
     color: $theme.colors.primary,
     fontWeight: 'bold',
 }));
-
+// @ts-ignore
 const Container = styled('div', ({props}) => ({
     flex: '1',
     display: 'flex',
@@ -41,7 +44,9 @@ const ThumbsContainer = styled('aside', () => ({
 
 }));
 
+
 const Thumb = styled('div', ({$theme}) => ({
+    // @ts-ignore
     ...$theme.borders.borderEA,
     display: 'inline-flex',
     borderRadius: '2px',
