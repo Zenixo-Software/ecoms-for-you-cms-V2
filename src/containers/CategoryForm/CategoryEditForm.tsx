@@ -1,48 +1,48 @@
 import React, {useCallback, useState} from 'react';
-import {useForm} from 'react-hook-form';
-import {useDrawerDispatch} from 'context/DrawerContext';
-import {Scrollbars} from 'react-custom-scrollbars';
-import Uploader from 'components/Uploader/Uploader';
-import Input from 'components/Input/Input';
-import Select from 'components/Select/Select';
-import Button, {KIND} from 'components/Button/Button';
-import DrawerBox from 'components/DrawerBox/DrawerBox';
-import {Col, Row} from 'components/FlexBox/FlexBox';
-import {fireAlertMessage} from "../../util/error/errorMessage"
-import {ButtonGroup, DrawerTitle, DrawerTitleWrapper, FieldDetails, Form,} from '../DrawerItems/DrawerItems.style';
-import {FormFields, FormLabel} from 'components/FormFields/FormFields';
-import {useFormik} from "formik";
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext";
 import {useDispatch, useSelector} from "react-redux";
-import {categoryCallerAction} from '../../redux/categoryRedux/categoryActions'
+import {useForm} from "react-hook-form";
+import {useFormik} from "formik";
+import {ButtonGroup, DrawerTitle, DrawerTitleWrapper, FieldDetails, Form} from "../DrawerItems/DrawerItems.style";
+import {Col, Row} from "../../components/FlexBox/FlexBox";
+import DrawerBox from "../../components/DrawerBox/DrawerBox";
+import Uploader from "../../components/Uploader/Uploader";
+import {FormFields, FormLabel} from "../../components/FormFields/FormFields";
+import Input from "../../components/Input/Input";
+import Select from "../../components/Select/Select";
+import Button, {KIND} from "../../components/Button/Button";
 import {Spinner} from "baseui/spinner";
-
-// const options = [
-//     {value: 'grocery', name: 'Grocery', id: '1'},
-//     {value: 'women-cloths', name: 'Women Cloths', id: '2'},
-//     {value: 'bags', name: 'Bags', id: '3'},
-//     {value: 'makeup', name: 'Makeup', id: '4'},
-// ];
-type Props = any;
+import {fireAlertMessage} from "../../util/error/errorMessage"
+import {editCategoryCallerAction} from '../../redux/categoryRedux/categoryActions'
+import {Scrollbars} from 'react-custom-scrollbars';
 
 const dataObj = {
+    id:'',
     title: '',
     icon: '',
     type: '',
     children: [],
 }
 
-
-const AddCategory: React.FC<Props> = () => {
+function CategoryEditForm(props) {
+    const data = useDrawerState('data');
     const dispatchWindow = useDrawerDispatch();
     const dispatch = useDispatch()
     const closeDrawer = useCallback(() => dispatchWindow({type: 'CLOSE_DRAWER'}), [
         dispatchWindow,
     ]);
     const {register, setValue} = useForm();
-    const [category, setCategory] = useState([]);
-    const [subCategory, setSubCategory] = useState([]);
-    const [catIcon, setCatIcon] = useState()
+    //------------------------------------------------------------------
+    // Create custom shop type for get category response
+    const shopType= [];
+    shopType.push({title:data.type})
+    const [category, setCategory] = useState(shopType);
+    //--------------------------------------------------------------------
+    const [subCategory, setSubCategory] = useState(data.children);
+    const [catIcon, setCatIcon] = useState(data.icon)
     const loading = useSelector((state: any) => state.categoryReducer.loading);
+
+    // For shop type
     const shopTypes = [];
     shopTypes.push(localStorage.getItem('shopType'))
     const options = [];
@@ -50,7 +50,9 @@ const AddCategory: React.FC<Props> = () => {
         options.push({name: shopTypes[i]});
     }
 
+
     const handleChange = ({value}) => {
+        console.log(value)
         setValue('parent', value);
         setCategory(value);
     };
@@ -81,21 +83,22 @@ const AddCategory: React.FC<Props> = () => {
             return
         }
 
+        dataObj.id = data.id
         dataObj.title = values.title;
         dataObj.icon = catIcon;
         dataObj.type = localStorage.getItem('shopType').toLowerCase();
         const subCat = [];
         for (let i = 0; i < subCategory.length; i++) {
-            subCat.push({title: subCategory[i].name, type: localStorage.getItem('shopType').toLowerCase(),id:i});
+            subCat.push({title: subCategory[i].title, type: localStorage.getItem('shopType').toLowerCase()});
         }
         dataObj.children = subCat;
-        dispatch(categoryCallerAction(dataObj, closeDrawer))
+        dispatch(editCategoryCallerAction(dataObj, closeDrawer))
 
     }
 
     const formik = useFormik({
         initialValues: {
-            title: "",
+            title: data.title,
         },
         onSubmit: (values) => {
             const loading = false
@@ -107,7 +110,7 @@ const AddCategory: React.FC<Props> = () => {
     return (
         <>
             <DrawerTitleWrapper>
-                <DrawerTitle>Add Category</DrawerTitle>
+                <DrawerTitle>Update Category</DrawerTitle>
             </DrawerTitleWrapper>
 
             <Form onSubmit={formik.handleSubmit} style={{height: '100%'}}>
@@ -145,7 +148,7 @@ const AddCategory: React.FC<Props> = () => {
                                     },
                                 }}
                             >
-                                <Uploader onChange={handleUploader}/>
+                                <Uploader imageURL={data.icon} onChange={handleUploader}/>
                             </DrawerBox>
                         </Col>
                     </Row>
@@ -153,7 +156,7 @@ const AddCategory: React.FC<Props> = () => {
                     <Row>
                         <Col lg={4}>
                             <FieldDetails>
-                                Add your category description and necessary informations from
+                                Add your category description and necessary information's from
                                 here
                             </FieldDetails>
                         </Col>
@@ -175,8 +178,8 @@ const AddCategory: React.FC<Props> = () => {
                                     <Select
                                         creatable
                                         multi
-                                        labelKey="name"
-                                        valueKey="value"
+                                        labelKey="title"
+                                        valueKey="title"
                                         placeholder="Ex: Type your category name (fruits,vegetables)"
                                         value={subCategory}
                                         onChange={handleSubCategoryChange}
@@ -197,11 +200,11 @@ const AddCategory: React.FC<Props> = () => {
                                     <FormLabel>Parent</FormLabel>
                                     <Select
                                         options={options}
-                                        labelKey="name"
-                                        valueKey="value"
+                                        labelKey="title"
+                                        valueKey="title"
                                         placeholder="Ex: Choose parent category"
                                         value={category}
-                                        searchable={false}
+                                        disabled
                                         onChange={handleChange}
                                         overrides={{
                                             Placeholder: {
@@ -291,7 +294,7 @@ const AddCategory: React.FC<Props> = () => {
                         }}
                     >
                         {!loading ? (
-                            <div> Create Category </div>
+                            <div> Edit Category </div>
                         ) : (
                             <div style={{display: 'flex', flexDirection: 'row'}}>
                                 <div style={{marginTop: 4}}>
@@ -308,6 +311,6 @@ const AddCategory: React.FC<Props> = () => {
             </Form>
         </>
     );
-};
+}
 
-export default AddCategory;
+export default CategoryEditForm;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Img } from 'react-image';
+// @ts-ignore
 import placeholder from './product-placeholder.png';
 const Placeholder = () => <img src={placeholder} alt="placeholder" />;
 export default function Image({

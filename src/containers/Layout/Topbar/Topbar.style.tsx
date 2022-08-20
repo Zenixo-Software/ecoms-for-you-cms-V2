@@ -16,7 +16,9 @@ export const NotificationIconWrapper = styled('div', ({ $theme }) => ({
   },
 }));
 
+
 export const AlertDot = styled('div', ({ $theme }) => ({
+  // @ts-ignore
   color: $theme.colors.lightGreen,
   position: 'absolute',
   top: '-4px',
@@ -53,6 +55,7 @@ export const Logo = styled('div', () => ({
 }));
 
 export const DrawerIcon = styled('div', ({ $theme }) => ({
+  // @ts-ignore
   color: $theme.colors.textDark,
   cursor: 'pointer',
 }));
@@ -92,6 +95,7 @@ export const UserDropdowItem = styled('div', () => ({
 export const NavLink = styled(RRNavLink, ({ $theme }) => ({
   fontSize: '16px',
   fontWeight: '700',
+  // @ts-ignore
   color: $theme.colors.textNormal,
   lineHeight: '1.2em',
   textDecoration: 'none',
@@ -99,6 +103,7 @@ export const NavLink = styled(RRNavLink, ({ $theme }) => ({
   alignItems: 'center',
   margin: '0',
   padding: '16px 20px',
+  // @ts-ignore
   borderBottom: `1px solid ${$theme.colors.backgroundF7}`,
   transition: '0.15s ease-in-out',
   cursor: 'pointer',
@@ -111,6 +116,7 @@ export const NavLink = styled(RRNavLink, ({ $theme }) => ({
 export const LogoutBtn = styled('button', ({ $theme }) => ({
   fontSize: '16px',
   fontWeight: '700',
+  // @ts-ignore
   color: $theme.colors.textNormal,
   backgroundColor: 'transparent',
   lineHeight: '1.2em',
@@ -129,6 +135,7 @@ export const LogoutBtn = styled('button', ({ $theme }) => ({
 }));
 
 export const CloseButton = styled('button', ({ $theme }) => ({
+  // @ts-ignore
   color: $theme.colors.textNormal,
   backgroundColor: 'transparent',
   outline: '0',

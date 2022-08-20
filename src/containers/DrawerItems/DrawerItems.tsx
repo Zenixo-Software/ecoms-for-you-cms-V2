@@ -12,6 +12,7 @@ import CategoryForm from '../CategoryForm/CategoryForm';
 import StaffMemberForm from '../StaffMemberForm/StaffMemberForm';
 import Sidebar from '../Layout/Sidebar/Sidebar';
 import OrderForm from "../OrderForm/OrderForm";
+import CategoryEditForm from "../CategoryForm/CategoryEditForm";
 
 /** Components Name Constants */
 const DRAWER_COMPONENTS = {
@@ -21,6 +22,7 @@ const DRAWER_COMPONENTS = {
   CATEGORY_FORM: CategoryForm,
   STAFF_MEMBER_FORM: StaffMemberForm,
   OPEN_ORDER_EDIT_FORM: OrderForm,
+  OPEN_CATEGORY_EDIT_FORM: CategoryEditForm,
   SIDEBAR: Sidebar,
 };
 
