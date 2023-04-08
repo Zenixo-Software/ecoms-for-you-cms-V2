@@ -8,6 +8,7 @@ import {
 
 export function* addCategoryCaller(action) {
   try {
+    console.log('CategorySaga',action)
     yield put({ type: actionTypes.ADD_CATEGORY_START });
     const formData = new FormData();
     formData.append("title", action.data.title);

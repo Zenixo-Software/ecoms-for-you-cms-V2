@@ -10,7 +10,7 @@ export function* registerCaller(action) {
     try {
         yield put({type: actionType.REGISTER_START});
         const Axios = yield createAuthRequest();
-        const res = yield Axios.post("cmsRegisterUser", action.data)
+        const res = yield Axios.post("cms-user", action.data)
         if (res) {
             console.log(res)
             fireAlertRegister("You store has been created. Check your email...!😍")
