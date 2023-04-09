@@ -11,7 +11,10 @@ import DrawerBox from "components/DrawerBox/DrawerBox";
 import { Grid, Row, Col } from "components/FlexBox/FlexBox";
 import { Form, FieldDetails } from "../DrawerItems/DrawerItems.style";
 import { FormFields, FormLabel } from "components/FormFields/FormFields";
-import { fireAlertMessage, fireAlertRegister } from "../../util/error/errorMessage";
+import {
+  fireAlertMessage,
+  fireAlertRegister,
+} from "../../util/error/errorMessage";
 
 const options = [
   { value: "active", label: "Active" },
@@ -21,22 +24,22 @@ const options = [
 type Props = {};
 const SiteSettingsForm: React.FC<Props> = () => {
   const { register, handleSubmit, setValue } = useForm();
-  const onSubmit = (data) => {    
+  const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("siteName", data.site_name);
-    formData.append("siteDescription", data.description);
+    formData.append("siteDescription", description);
     formData.append(
       "siteStatus",
       data.reactSelect.map((item) => item.label)
     );
-
-    
-    formData.append("siteLogo", data.reactDropzone);
-    const cmsUserId = localStorage.getItem('cmsUserId');
-    if (typeof cmsUserId === 'string') {
-      formData.append('cmsUserId', cmsUserId);
+    formData.append("siteLogo", data.siteLogo);
+    formData.append("mainBanner", data.mainBanner);
+    formData.append("siteTitle", data.site_title);
+    const cmsUserId = localStorage.getItem("cmsUserId");
+    if (typeof cmsUserId === "string") {
+      formData.append("cmsUserId", cmsUserId);
     }
-    console.log( formData);
+    console.log(formData);
     axiosInstance
       .post("/site-settings", formData)
       .then((response) => {
@@ -50,16 +53,22 @@ const SiteSettingsForm: React.FC<Props> = () => {
   };
   const [category, setCategory] = useState([]);
   const [description, setDescription] = React.useState("");
+  const [title, setTitle] = React.useState("");
   const handleMultiChange = ({ value }) => {
     setValue("reactSelect", value);
     setCategory(value);
   };
-  const handleUploader = (files) => {
-    setValue("reactDropzone", files[0]);
+  const siteLogoHandleUploader = (files) => {
+    setValue("siteLogo", files[0]);
+  };
+  const bannerLogoHandleUploader = (files) => {
+    setValue("mainBanner", files[0]);
   };
   React.useEffect(() => {
     register({ name: "reactSelect" });
     register({ name: "reactDropzone" });
+    register({ name: "siteLogo" });
+    register({ name: "mainBanner" });
   }, [register]);
   return (
     <Grid fluid={true}>
@@ -71,7 +80,18 @@ const SiteSettingsForm: React.FC<Props> = () => {
 
           <Col md={8}>
             <DrawerBox>
-              <Uploader onChange={handleUploader} />
+              <Uploader onChange={siteLogoHandleUploader} />
+            </DrawerBox>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={4}>
+            <FieldDetails>Upload your site banner here</FieldDetails>
+          </Col>
+
+          <Col md={8}>
+            <DrawerBox>
+              <Uploader onChange={bannerLogoHandleUploader} />
             </DrawerBox>
           </Col>
         </Row>
@@ -89,6 +109,14 @@ const SiteSettingsForm: React.FC<Props> = () => {
                 <FormLabel>Site Name</FormLabel>
                 <Input
                   name="site_name"
+                  inputRef={register({ required: true, maxLength: 20 })}
+                />
+              </FormFields>
+
+              <FormFields>
+                <FormLabel>Site Title</FormLabel>
+                <Input
+                  name="site_title"
                   inputRef={register({ required: true, maxLength: 20 })}
                 />
               </FormFields>
