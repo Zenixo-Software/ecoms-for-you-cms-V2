@@ -33,6 +33,7 @@ const AuthProvider = (props: any) => {
         localStorage.removeItem('tenantId');
         localStorage.removeItem('shopType');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('cmsUserId');
         setTimeout(cb, 100);
         history.push('/login')
     }

@@ -1,36 +1,65 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import Uploader from 'components/Uploader/Uploader';
-import Input from 'components/Input/Input';
-import { Textarea } from 'components/Textarea/Textarea';
-import Select from 'components/Select/Select';
-import Button from 'components/Button/Button';
-import DrawerBox from 'components/DrawerBox/DrawerBox';
-import { Grid, Row, Col } from 'components/FlexBox/FlexBox';
-import { Form, FieldDetails } from '../DrawerItems/DrawerItems.style';
-import { FormFields, FormLabel } from 'components/FormFields/FormFields';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import axiosInstance from "../../util/function/axiosInstance";
+import Uploader from "components/Uploader/Uploader";
+import Input from "components/Input/Input";
+import { Textarea } from "components/Textarea/Textarea";
+import Select from "components/Select/Select";
+import Button from "components/Button/Button";
+import DrawerBox from "components/DrawerBox/DrawerBox";
+import { Grid, Row, Col } from "components/FlexBox/FlexBox";
+import { Form, FieldDetails } from "../DrawerItems/DrawerItems.style";
+import { FormFields, FormLabel } from "components/FormFields/FormFields";
+import { fireAlertMessage, fireAlertRegister } from "../../util/error/errorMessage";
 
 const options = [
-  { value: 'active', label: 'Active' },
-  { value: 'maintenance', label: 'Maintenance' },
-  { value: 'turn-off', label: 'Down' },
+  { value: "active", label: "Active" },
+  { value: "maintenance", label: "Maintenance" },
+  { value: "turn-off", label: "Down" },
 ];
 type Props = {};
 const SiteSettingsForm: React.FC<Props> = () => {
   const { register, handleSubmit, setValue } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {    
+    const formData = new FormData();
+    formData.append("siteName", data.site_name);
+    formData.append("siteDescription", data.description);
+    formData.append(
+      "siteStatus",
+      data.reactSelect.map((item) => item.label)
+    );
+
+    
+    formData.append("siteLogo", data.reactDropzone);
+    const cmsUserId = localStorage.getItem('cmsUserId');
+    if (typeof cmsUserId === 'string') {
+      formData.append('cmsUserId', cmsUserId);
+    }
+    console.log( formData);
+    axiosInstance
+      .post("/site-settings", formData)
+      .then((response) => {
+        fireAlertRegister("Your New Site Settings Is Update!");
+        console.log("Success:", response);
+      })
+      .catch((error) => {
+        fireAlertMessage("Something went wrong!");
+        console.error("Error:", error);
+      });
+  };
   const [category, setCategory] = useState([]);
-  const [description, setDescription] = React.useState('');
+  const [description, setDescription] = React.useState("");
   const handleMultiChange = ({ value }) => {
-    setValue('reactSelect', value);
+    setValue("reactSelect", value);
     setCategory(value);
   };
   const handleUploader = (files) => {
-    setValue('reactDropzone', files);
+    setValue("reactDropzone", files[0]);
   };
   React.useEffect(() => {
-    register({ name: 'reactSelect' });
-    register({ name: 'reactDropzone' });
+    register({ name: "reactSelect" });
+    register({ name: "reactDropzone" });
   }, [register]);
   return (
     <Grid fluid={true}>
@@ -136,12 +165,12 @@ const SiteSettingsForm: React.FC<Props> = () => {
                   overrides={{
                     BaseButton: {
                       style: ({ $theme }) => ({
-                        width: '50%',
-                        marginLeft: 'auto',
-                        borderTopLeftRadius: '3px',
-                        borderTopRightRadius: '3px',
-                        borderBottomLeftRadius: '3px',
-                        borderBottomRightRadius: '3px',
+                        width: "50%",
+                        marginLeft: "auto",
+                        borderTopLeftRadius: "3px",
+                        borderTopRightRadius: "3px",
+                        borderBottomLeftRadius: "3px",
+                        borderBottomRightRadius: "3px",
                       }),
                     },
                   }}

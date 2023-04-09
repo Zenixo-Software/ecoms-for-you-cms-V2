@@ -36,6 +36,7 @@ export function* loginCaller(action) {
             const jwt = parseJwt(user)
             localStorage.setItem("tenantId", jwt.tenantId);
             localStorage.setItem("shopType", jwt.shopType);
+            localStorage.setItem("cmsUserId", jwt.cmsUserId);
             action.makeAuthenticated(true)
             action.history.push("/")
             yield put({
