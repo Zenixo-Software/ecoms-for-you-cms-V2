@@ -11,6 +11,7 @@ import ProductCard from 'components/ProductCard/ProductCard';
 import NoResult from 'components/NoResult/NoResult';
 import {CURRENCY} from 'settings/constants';
 import Placeholder from 'components/Placeholder/Placeholder';
+import axiosInstance from '../../util/function/axiosInstance';
 
 
 export const ProductsRow = styled('div', ({$theme}) => ({
@@ -110,8 +111,17 @@ export default function Products() {
     const [priceOrder, setPriceOrder] = useState([]);
     const [search, setSearch] = useState([]);
 
+    const [product,setProduct]=useState([])
     // const {loading} = useSelector((state: any) => state.productReducer)
     // console.log(loading)
+
+    React.useEffect(() => {
+        axiosInstance
+          .get(`product/${localStorage.getItem("cmsUserId")}`)
+          .then((response) => setProduct(response.data))
+          .catch((error) => console.log(error));
+      }, [refetch]);
+    
 
     if (error) {
         return <div>Error! {error.message}</div>;
@@ -168,7 +178,8 @@ export default function Products() {
         setSearch(value);
         refetch({searchText: value});
     }
-
+    console.log(product);
+    
     return (
         <Grid fluid={true}>
             <Row>
@@ -217,9 +228,9 @@ export default function Products() {
                     </Header>
 
                     <Row>
-                        {data ? (
-                            data.products && data.products.items.length !== 0 ? (
-                                data.products.items.map((item: any, index: number) => (
+                        {product ? (
+                            product && product.length !== 0 ? (
+                                product.map((item: any, index: number) => (
                                     <Col
                                         md={4}
                                         lg={3}
