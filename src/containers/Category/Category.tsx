@@ -190,7 +190,7 @@ export default function Category() {
                   getCategory.length ? (
                     getCategory.map((item, index) => (
                       <React.Fragment key={index}>
-                        <StyledCell>{item._id}</StyledCell>
+                        <StyledCell>{item.categoryId}</StyledCell>
                         <StyledCell>
                           <img
                             style={{ width: 60, height: 60, borderRadius: 100 }}

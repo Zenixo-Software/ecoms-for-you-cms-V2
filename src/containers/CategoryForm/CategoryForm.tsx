@@ -290,7 +290,7 @@ const AddCategory: React.FC<Props> = () => {
                             },
                         }}
                     >
-                        {!loading ? (
+                        {loading ? (
                             <div> Create Category </div>
                         ) : (
                             <div style={{display: 'flex', flexDirection: 'row'}}>

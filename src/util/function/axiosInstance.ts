@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 
 const instance: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_API_URL,
-  timeout: 5000,
+  timeout: 40000,
   headers: {
     'Content-Type': 'multipart/form-data',
   },

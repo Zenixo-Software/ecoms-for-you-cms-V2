@@ -1,30 +1,35 @@
 import { put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../categoryRedux/categoryActionTypes";
-import { createRequest } from "../../util/function/axiosRequest";
+import { createAxiosNewRequest,createRequest } from "../../util/function/axiosRequest";
 import {
   fireAlertMessage,
   fireAlertRegister,
 } from "../../util/error/errorMessage";
+import axiosInstance from "../../util/function/axiosInstance";
 
 export function* addCategoryCaller(action) {
   try {
-    console.log('CategorySaga',action)
+    console.log("CategorySaga", action);
     yield put({ type: actionTypes.ADD_CATEGORY_START });
     const formData = new FormData();
     formData.append("title", action.data.title);
     formData.append("image", action.data.icon);
     formData.append("type", action.data.type);
+    formData.append("tenantId", localStorage.getItem("cmsUserId"));
     action.data.children.forEach((e, index) => {
       formData.append(`children[${index}][title]`, e["title"]);
       formData.append(`children[${index}][type]`, e["type"]);
     });
-    const Axios = yield createRequest();
-    const res = yield Axios.post("category", formData);
-    if (res) {
-      yield put({ type: actionTypes.GET_ALL_CATEGORY_CALLER });
-      fireAlertRegister("Category Created!");
-      action.closeDrawer();
-    }
+    axiosInstance
+      .post("category", formData)
+      .then((response) => {
+        fireAlertRegister("Category Created!");
+        action.closeDrawer();
+      })
+      .catch((error) => {
+        console.log(error);
+        fireAlertMessage("Something went wrong!");
+      });
   } catch (error) {
     fireAlertMessage("Something went wrong!");
     yield put({ type: actionTypes.ADD_CATEGORY_FAILED });
@@ -61,14 +66,10 @@ export function* editCategoryCaller(action) {
 }
 
 export function* getCategoryCaller(action) {
-  console.log(action)
+  console.log(action);
   try {
-    const Axios = yield createRequest();
-    const res = yield Axios.get("category",{
-      params:{
-        q: action.data ? action.data : ''
-      }
-    });
+    const Axios = yield createAxiosNewRequest();
+    const res = yield Axios.get(`category/${localStorage.getItem('cmsUserId')}`)
     if (res.status === 200) {
       yield put({
         type: actionTypes.GET_ALL_CATEGORY_SUCCESS,
@@ -83,7 +84,7 @@ export function* getCategoryCaller(action) {
 
 export function* deleteCategoryCaller(action) {
   try {
-    const id = action.data
+    const id = action.data;
     yield put({ type: actionTypes.CATEGORY_DELETE_START });
     const Axios = yield createRequest();
     const res = yield Axios.delete(`category/${id}`);
@@ -94,7 +95,7 @@ export function* deleteCategoryCaller(action) {
   } catch (error) {
     fireAlertMessage("Something went wrong!");
     yield put({ type: actionTypes.CATEGORY_DELETE_FAILED });
-  }finally {
+  } finally {
     yield put({ type: actionTypes.CATEGORY_DELETE_END });
     yield put({ type: actionTypes.CATEGORY_REMOVE_MODEL_CLOSE });
   }
