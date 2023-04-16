@@ -24,7 +24,6 @@ export function* registerCaller(action) {
 }
 
 export function* loginCaller(action) {
-    console.log(action)
     const {email, password} = action.data
     let errorMessage = ""
     try {
