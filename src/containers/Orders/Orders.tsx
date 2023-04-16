@@ -16,6 +16,7 @@ import NoResult from "components/NoResult/NoResult";
 import { AiTwotoneEdit } from "react-icons/all";
 import axiosInstance from "../../util/function/axiosInstance";
 import { fireAlertMessage } from "../../util/error/errorMessage";
+import { InLineLoader } from "../../components/InlineLoader/InlineLoader";
 
 const GET_ORDERS = gql`
   query getOrders($status: String, $limit: Int, $searchText: String) {
@@ -292,28 +293,16 @@ export default function Orders() {
 
                 {orders ? (
                   orders.length ? (
-                    orders.map((item:any, index) => (
+                    orders.map((item: any, index) => (
                       <React.Fragment key={index}>
                         <StyledCell>{item.orderId.substring(0, 5)}</StyledCell>
-                        <StyledCell>
-                        {item.cmsId.storeName}
-                        </StyledCell>
+                        <StyledCell>{item.cmsId.storeName}</StyledCell>
                         <StyledCell>{item.userId.name}</StyledCell>
-                        <StyledCell>
-                        {item.amount}
-                        </StyledCell>
-                        <StyledCell>
-                        {item.date}
-                        </StyledCell>
-                        <StyledCell>
-                        {item.deliveryAddress}
-                        </StyledCell>
-                        <StyledCell>
-                        {item.deliveryFee}
-                        </StyledCell>
-                        <StyledCell>
-                        {item.status}
-                        </StyledCell>
+                        <StyledCell>{item.amount}</StyledCell>
+                        <StyledCell>{item.date}</StyledCell>
+                        <StyledCell>{item.deliveryAddress}</StyledCell>
+                        <StyledCell>{item.deliveryFee}</StyledCell>
+                        <StyledCell>{item.status}</StyledCell>
                         <StyledCell>
                           <div
                             onClick={() => openOderForm(item)}
@@ -388,15 +377,20 @@ export default function Orders() {
                     //         {/*</StyledCell>*/}
                     //     </React.Fragment>
                     // ))
-                    <NoResult
-                      hideButton={false}
-                      style={{
-                        gridColumnStart: "1",
-                        gridColumnEnd: "one",
-                      }}
-                    />
+                    <>
+                      {/* <NoResult
+                        hideButton={false}
+                        style={{
+                          gridColumnStart: "1",
+                          gridColumnEnd: "one",
+                        }}
+                      /> */}
+                      <InLineLoader />
+                    </>
                   )
-                ) : null}
+                ) : (
+                  <InLineLoader />
+                )}
               </StyledTable>
             </TableWrapper>
           </Wrapper>
