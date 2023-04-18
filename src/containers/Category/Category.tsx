@@ -194,7 +194,7 @@ export default function Category() {
                         <StyledCell>
                           <img
                             style={{ width: 60, height: 60, borderRadius: 100 }}
-                            src={item.icon}
+                            src={item.imageUrl}
                             alt="Ecoms For You"
                           />
                         </StyledCell>
