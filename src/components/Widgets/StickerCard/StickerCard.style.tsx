@@ -7,7 +7,7 @@ export const Card = styled("div", () => ({
   flexDirection: "column",
   padding: "30px",
   borderRadius: "6px",
-  backgroundColor: "#ffffff"
+  backgroundColor: "#ffffff",
 }));
 
 export const TopInfo = styled("div", () => ({
@@ -74,5 +74,6 @@ export const Link = styled("a", ({ $theme }) => ({
   fontFamily: $theme.typography.primaryFontFamily,
   color: $theme.colors.purple400,
   lineHeight: "1.2",
-  textDecoration: "none"
+  textDecoration: "none",
+  cursor:'pointer'
 }));

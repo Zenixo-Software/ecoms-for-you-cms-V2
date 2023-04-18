@@ -4541,6 +4541,11 @@ csstype@^3.0.0, csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
 
+csv-stringify@^6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.3.2.tgz#0d5105dcf6f5a6605262d1a008883120684db164"
+  integrity sha512-dD9gfbxNKa5v90NHiE2Qd6F9I52GtJjGTfowwzqiNDZD/+NPW3h19d2Nvv311a8QUW11rYRobco27nvVAnCrLw==
+
 cyclist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
@@ -5771,6 +5776,16 @@ file-loader@6.1.1:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
+
+file-saver-es@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver-es/-/file-saver-es-2.0.5.tgz#5afcb95c3c9884b9cf0852046ec60d46b676790c"
+  integrity sha512-Kg0lt+is9nOyi/VDms9miScNGot25jVFbjFccXuCL/shd2Q+rt70MALxHVkXllsX83JEBLiHQNjDPGd/6FIOoQ==
+
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
 
 file-selector@^0.1.8:
   version "0.1.19"
@@ -8926,6 +8941,11 @@ pako@~1.0.5:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
+
+papaparse@^5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-5.4.1.tgz#f45c0f871853578bd3a30f92d96fdcfb6ebea127"
+  integrity sha512-HipMsgJkZu8br23pW15uvo6sib6wne/4woLZPlFf3rpDyMe9ywEXUsuD7+6K9PRkJlVT51j/sCOYDKGGS3ZJrw==
 
 parallel-transform@^1.1.0:
   version "1.2.0"
