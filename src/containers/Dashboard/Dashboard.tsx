@@ -58,6 +58,7 @@ const Dashboard = () => {
       .then((response) => setTotalProduct(response.data))
   }, []);
 
+
   return (
     <Grid fluid={true}>
       <Row>
@@ -106,7 +107,7 @@ const Dashboard = () => {
               revenue.length === 0
                 ? "0"
                 : revenue.length === 1
-                ? String(revenue.length[0].subtotal)
+                ? String(revenue[0].subtotal)
                 : String(
                     revenue.reduce((accumulator: any, currentValue: any) => {
                       return accumulator + Number(currentValue.subtotal);
