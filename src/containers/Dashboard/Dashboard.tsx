@@ -44,21 +44,18 @@ const Dashboard = () => {
     axiosInstance
       .get(`order/${localStorage.getItem("cmsUserId")}`)
       .then((response) => setRevenue(response.data))
-      .catch((error) => fireAlertMessage("Something went wrong!"));
   }, []);
 
   useEffect(() => {
     axiosInstance
       .get(`shop-user/shop/${localStorage.getItem("cmsUserId")}`)
       .then((response) => setTotalCustomer(response.data))
-      .catch((error) => fireAlertMessage("Something went wrong!"));
   }, []);
 
   React.useEffect(() => {
     axiosInstance
       .get(`product/${localStorage.getItem("cmsUserId")}`)
       .then((response) => setTotalProduct(response.data))
-      .catch((error) => console.log(error));
   }, []);
 
   return (
