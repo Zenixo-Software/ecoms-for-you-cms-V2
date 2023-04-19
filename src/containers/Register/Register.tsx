@@ -58,7 +58,7 @@ export default function Register() {
     setCategory(value);
   };
 
-  const phoneRegex = /^\d{10}$/; // matches a 10-digit phone number
+  const phoneRegex = /^\d{10}$/; 
 
   //Validation Part
   const validate = (values) => {
