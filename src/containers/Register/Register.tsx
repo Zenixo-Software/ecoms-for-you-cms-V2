@@ -58,6 +58,8 @@ export default function Register() {
     setCategory(value);
   };
 
+  const phoneRegex = /^\d{10}$/; // matches a 10-digit phone number
+
   //Validation Part
   const validate = (values) => {
     if (!values.storeName) {
@@ -86,6 +88,10 @@ export default function Register() {
     }
     if (!values.tpNumber) {
       fireAlertMessage("Telephone Number is Required!");
+      return;
+    }
+    if (!phoneRegex.test(values.tpNumber)) {
+      fireAlertMessage("Telephone Number is Invalid!");
       return;
     }
     if (category.length === 0) {
