@@ -10,7 +10,11 @@ import Input from "components/Input/Input";
 import { Textarea } from "components/Textarea/Textarea";
 import Select from "components/Select/Select";
 import { FormFields, FormLabel } from "components/FormFields/FormFields";
-import { fireAlertMessage } from "../../util/error/errorMessage";
+import {
+  fireAlertMessage,
+  fireAlertRegister,
+} from "../../util/error/errorMessage";
+import { Spinner } from "baseui/spinner";
 import { addProductAction } from "../../redux/productRedux/productActions";
 
 import {
@@ -74,6 +78,8 @@ const AddProduct: React.FC<Props> = (props) => {
   const [image1, setImage1] = useState();
   const [image2, setImage2] = useState();
 
+  const [loading, setLoading] = useState(false);
+
   const handleMultiChange = ({ value }) => {
     setValue("categories", value);
     setTag(value);
@@ -131,7 +137,45 @@ const AddProduct: React.FC<Props> = (props) => {
       return;
     }
     // dispatch
-    dispatch(addProductAction(mixObj(values)));
+    // dispatch(addProductAction(mixObj(values)));
+
+    setLoading(true);
+
+    const data = mixObj(values);
+
+    const formData = new FormData();
+    formData.append("title", data.name);
+    formData.append("description", data.description);
+    formData.append("price", data.price);
+    formData.append("quantity", data.quantity);
+    formData.append("salePrice", data.salePrice);
+    formData.append("unit", data.unit);
+    formData.append("image", data.image);
+    formData.append("image1", data.image1);
+    formData.append("image2", data.image2);
+    formData.append("discountInPercent", data.discountInPercent);
+    const cmsUserId = localStorage.getItem("cmsUserId");
+    if (cmsUserId !== null) {
+      formData.append("tenentId", cmsUserId);
+    }
+    data.tag.forEach((e, index) => {
+      formData.append(`categories[${index}]`, e.categoryId);
+    });
+    formData.append(
+      "type",
+      data.type.filter((item) => item.value)
+    );
+
+    axiosInstance
+      .post("product", formData)
+      .then((response) => {
+        fireAlertRegister("Product Created...!😍");
+        setLoading(false);
+      })
+      .catch((error) => {
+        fireAlertMessage("There is an error with your prosess!");
+        setLoading(false);
+      });
   };
 
   const mixObj = (value) => {
@@ -158,7 +202,7 @@ const AddProduct: React.FC<Props> = (props) => {
       const loading = false;
       if (!loading) validate(values);
     },
-  });  
+  });
   return (
     <>
       <DrawerTitleWrapper>
@@ -469,7 +513,17 @@ const AddProduct: React.FC<Props> = (props) => {
               },
             }}
           >
-            Create Product
+            {!loading ? (
+              <div> Create Product </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <div style={{ marginTop: 4 }}>Loading...!</div>
+                <div style={{ marginLeft: 8 }}>
+                  {/*@ts-ignore*/}
+                  <Spinner color="#ffffff" size={25} title="Loading...!" />
+                </div>
+              </div>
+            )}
           </Button>
         </ButtonGroup>
       </Form>
